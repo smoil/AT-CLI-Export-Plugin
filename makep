@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#Very simple script for packaging an AT plugin
+
+#copy the plugin.xml file to the bin directory. This is where
+# Eclipses put the class files it compiles 
+cp -v plugin.xml bin
+
+#change to this bin directory
+cd bin
+
+#create zip file of the *.class and *.xml files.
+zip -rv CLIExportPlugin.zip . -i \*.class *.xml
+
+# move zip file to the AT plugins directory
+mv -v CLIExportPlugin.zip ../
