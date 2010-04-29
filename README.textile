@@ -1,19 +1,19 @@
-h2. CLI Export Plugin for Archivists' Toolkit H2
+h2. CLI Export Plugin for Archivists' Toolkit
 
 This plugin stemmed from a need to periodically export resources from AT without user interaction.  Originally I modified the AT source directly to support this but the core developers were very helpful, responsive and added command line support for plugins.
 
 Plugin features
 
-*export of resources in EAD format
-*individual file per resource
-*only exports resources with a finding aid status of complete
+* export of resources in EAD format
+* individual file per resource
+* only exports resources with a finding aid status of complete
 
 Requirements
 
-*Archivists' Toolkit version 2.0.6 or greater
-*ensure that database settings have been saved through the GUI client
+* Archivists' Toolkit version 2.0.6 or greater
+* ensure that database settings have been saved through the GUI client
 
-h2. Compilation and set up H2
+h2. Compilation and set up
 
 Install an appropriate version of the Archivists' Toolkit.  You will need to ensure that all the jar files under the /lib directory of the AT installation directory are a part of the Java class path when compiling this plugin.
 
@@ -25,7 +25,7 @@ You can view the Support and For Developers section of the AT website http://arc
 
 _Note: This has only been tested under OS X_
 
-h2. Usage H2
+h2. Usage
 
 Once the plugin is installed you can execute atcli.command with appropriate parameters from the AT installation directory.
 
@@ -37,16 +37,16 @@ This plugin requires 3 parameters
 
 Example:
 
-atcli.command mydatabasepassword ead ~/path/for/exported/files/
+<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/</code>
 
 Each exported resource will be named according to the resources id and have an xml extension.
 
-h2 Possible Issues H2
+h2. Possible Issues
 
 If you encounter a problem exporting large resources due to out of memory errors (particularly due to heap space) you can pass memory settings to the jvm by editing the atcli.command file.
 
 For OSX I had to add <code>options="$options -Xms32m -Xmx512m"</code> before the VM is launched (near the end of the file, line 1492 in my case).  The sizes you set will be dependent on the size of your largest resource since AT constructs the object in memory before writing to a file.
 
-h2. License H2
+h2. License
 
 I personally withhold no license to any of this code, however parts of this work may be a derivative of work from the Archivists' Toolkit and may be subject to terms I am unaware of.  This was developed while under the employ of the University of Southern California and there may be implications stemming from that which I am also unaware of.
