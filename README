@@ -14,4 +14,4 @@ Third param is the location where the generated exports will reside, be sure to 
 
 This will export all resources with a find aid status of complete.  Each resource will be exported to a file named RESOURCE_ID.xml.
 
-If you have stack issues, you can modify the atcli.command file under your AT installation by adding something similiar to options="$options -Xms32m -Xmx512m where the options are set.  This is dependent on your local jvm and the potential size of your resources.
+If you have stack issues, you can modify the atcli.command file under your AT installation by adding something similiar to options="$options -Xms32m -Xmx512m" where the options are set.  This is dependent on your local jvm and the potential size of your resources.
