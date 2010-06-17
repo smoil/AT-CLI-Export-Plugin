@@ -70,8 +70,8 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         for(int i=3; i<params.length;i++){
         	if(params[i].startsWith("-"))
         		optionsAndArgs.putAll(addParams(params, i));
-        }
-
+        }        
+        
         DomainAccessObject access = new ResourcesDAO();
 
         // get the list of all resources from the database
