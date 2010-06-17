@@ -42,11 +42,62 @@ Example:
 
 <code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed</code>
 
-Currently the only implemented opition is -fas for findingAidStatus.  You can provide more than 1 fas.
 
 Each exported resource will be named according to the resources id and have an xml extension.
 
 A file named resourceIndex.txt will be generated for every resource (including one not being exported) with fields for resourceIdentifier, getFindingAidStatus, title and lastUpdated.
+
+h2. Options
+
+Currently the only well tested option is for finding aid status.
+
+Options are additive; a record must meet the requirements of all options in order to be exported.  
+
+Each option has a tag and sometimes parameters which are invoked as follows: <code>-tag param1 param2 param3</code>
+
+Finding Aid Status
+tag: -fas
+params: match any of the passed params
+
+Author
+tag: -author
+params: match any of the passed params
+
+EAD finding aid unqiue identifier
+tag: -eadfauid
+params: match any of the passed params
+
+Resource identifier
+tag: -rid
+params: match any of the passed params
+
+Resource identifier 1
+tag: -rid1
+params: match any of the passed params
+
+Resource identifier 2
+tag: -rid2
+params: match any of the passed params
+
+Resource identifier 3
+tag: -rid3
+params: match any of the passed params
+
+Resource identifier 4
+tag: -rid4
+params: match any of the passed params
+
+Repository Name
+tag: -rn
+params: match any of the passed params
+
+Internal only
+tag: -io
+params: none needed
+
+Example with multiple options: <code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed InProcess -rid1 someid orsomeotherid oreventhisid -io</code>
+
+Note: params with multiple words are not yet supported but should be soon.  Currently each word would be interpreted as a separate param
 
 h2. Possible Issues
 

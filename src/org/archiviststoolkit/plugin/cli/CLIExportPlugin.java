@@ -71,19 +71,6 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         	if(params[i].startsWith("-"))
         		optionsAndArgs.putAll(addParams(params, i));
         }
-        
-//        System.out.println(optionsAndArgs.get("-cats"));
-//        System.out.println(optionsAndArgs.get("-fas"));
-//        System.out.println(optionsAndArgs.get("-cows"));
-//        
-//        if( ((java.util.List<String>) optionsAndArgs.get("-fas")).contains("Completed"))
-//        	System.out.println("WHATS UP SON");
-        
-//        if(true)
-//        	return;
-        
-        
-        // store finding aid statuses
 
         DomainAccessObject access = new ResourcesDAO();
 
@@ -152,7 +139,6 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         }
         
         for(int i = 0; i < recordCount; i++) {
-        	System.out.println(resources.get(i).getFindingAidStatus());
         	if( filterOnOptions(resources.get(i), optionsAndArgs)){        		
 	            try {
 	                // load the full resource from database using a long session
@@ -233,7 +219,79 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
     			fas_proceed = true;
     	}
     	
-    	return fas_proceed;
+    	// authors
+    	boolean author_proceed = true;
+    	if(options.containsKey("-author")){
+    		author_proceed = false;
+    		if( ((java.util.List<String>)options.get("-author")).contains(resource.getAuthor()) )
+    			author_proceed = true;
+    	}
+    	
+    	// ead fa unique id #
+    	boolean eadfauid_proceed = true;
+    	if(options.containsKey("-eadfauid")){
+    		eadfauid_proceed = false;
+    		if( ((java.util.List<String>)options.get("-eadfauid")).contains(resource.getEadFaUniqueIdentifier()) )
+    			eadfauid_proceed = true;
+    	}
+    	
+    	// resource ID #
+    	boolean rid_proceed = true;
+    	if(options.containsKey("-rid")){
+    		rid_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rid")).contains(resource.getResourceIdentifier()) )
+    			rid_proceed = true;
+    	}
+    	
+    	// resource ID # 1
+    	boolean rid1_proceed = true;
+    	if(options.containsKey("-rid1")){
+    		rid1_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rid1")).contains(resource.getResourceIdentifier1()) )
+    			rid1_proceed = true;
+    	}
+    	
+    	// resource ID # 2
+    	boolean rid2_proceed = true;
+    	if(options.containsKey("-rid2")){
+    		rid2_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rid2")).contains(resource.getResourceIdentifier2()) )
+    			rid2_proceed = true;
+    	}
+    	
+    	// resource ID # 3
+    	boolean rid3_proceed = true;
+    	if(options.containsKey("-rid3")){
+    		rid3_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rid3")).contains(resource.getResourceIdentifier3()) )
+    			rid3_proceed = true;
+    	}
+    	
+    	// resource ID # 4
+    	boolean rid4_proceed = true;
+    	if(options.containsKey("-rid4")){
+    		rid4_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rid4")).contains(resource.getResourceIdentifier4()) )
+    			rid4_proceed = true;
+    	}
+    	
+    	// repository Name
+    	boolean rn_proceed = true;
+    	if(options.containsKey("-rn")){
+    		rn_proceed = false;
+    		if( ((java.util.List<String>)options.get("-rn")).contains(resource.getRepositoryName()) )
+    			rn_proceed = true;
+    	}
+    	
+    	// internal only
+    	boolean io_proceed = true;
+    	if(options.containsKey("-io")){
+    		io_proceed = resource.getInternalOnly();
+    	}
+    	
+    	
+    	
+    	return (fas_proceed & author_proceed & eadfauid_proceed & rid_proceed & rid1_proceed & rid2_proceed & rid3_proceed & rn_proceed & io_proceed);
     }
 
     
