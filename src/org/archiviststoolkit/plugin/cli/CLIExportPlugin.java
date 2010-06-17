@@ -60,17 +60,17 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
      * the command line parameters
      */
     public void doTask(String task) {
-        // show the command line parameters
+    	// show the command line parameters
         String[] params = org.archiviststoolkit.plugin.ATPluginFactory.getInstance().getCliParameters();
         for(int i = 0; i < params.length; i++) {
             System.out.println("Parameter " + (i+1) + " = " + params[i]);
         }
 
-        /*
-        * do a test by getting all the resource rocords and print name out
-        * their name title and export as EAD. Thanks for Cyrus Farajpour
-        * for providing some of this code
-        */
+        // store finding aid statuses
+        java.util.List<String> findingAidStatuses = new java.util.ArrayList();
+        for(int i = 3; i < params.length; i++){
+        	findingAidStatuses.add(params[i]);
+        }
 
         DomainAccessObject access = new ResourcesDAO();
 
@@ -100,9 +100,47 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
 
         // get the ead exporter
         EADExport ead = new EADExport();
+        
+        // create an index file of all resources
+        java.io.File indexFile = new java.io.File(exportRootPath + "resourceIndex.txt");
+        try{
+        	indexFile.createNewFile();
+        }catch(Exception e){
+        	System.out.println("Failed to create index file");
+        }
+        
+        // populate index file
+       	try{
+        	java.io.FileWriter fstream = new java.io.FileWriter(indexFile);
+        	java.io.BufferedWriter out = new java.io.BufferedWriter(fstream);
+        	for(int i=0; i< recordCount; i++){
+        		out.write(resources.get(i).getResourceIdentifier().toString()+'\t');
+        		String status = resources.get(i).getFindingAidStatus();
+        		status = status.replace("\n", "");
+        		status = status.replace("\r", "");
+        		if(status.length() > 0){
+        			out.write(status+'\t');
+        		}else{
+        			out.write("--------"+'\t');
+        		}
+        		// remove newlines / carriage returns
+        		String title = resources.get(i).getTitle().replaceAll("\\n","").replaceAll("\\r","");
+        		if(title.length() > 0){
+        			out.write(title+'\t');
+        		}else{
+        			out.write("--------"+'\t');
+        		}
+        		//this doesnt work
+        		out.write(resources.get(i).getLastUpdated().toString());
+        		out.newLine();
+        	}
+        }catch(Exception e){
+        	System.out.println(e);
+        }
 
         for(int i = 0; i < recordCount; i++) {
-        	if(resources.get(i).getFindingAidStatus().equals("Completed")){
+        	if(findingAidStatuses.contains(resources.get(i).getFindingAidStatus())){        		
+        		
 	            try {
 	                // load the full resource from database using a long session
 	                Resources resource = (Resources)access.findByPrimaryKeyLongSession(resources.get(i).getIdentifier());

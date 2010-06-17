@@ -23,6 +23,8 @@ If you are using a POSIX compatible OS you should be able to run makep to packag
 
 You can view the Support and For Developers section of the AT website http://archiviststoolkit.org/ for detailed information on plugins.
 
+A precompiled and package version of the plugin is included, CLIExportPlugin.zip.  This should work but if you encounter problems try compiling from source.
+
 _Note: This has only been tested under OS X_
 
 h2. Usage
@@ -34,12 +36,15 @@ This plugin requires 3 parameters
 # DATABASE PASSWORD
 # a task name (currently only ead is supported)
 # a location for the export files (must include an ending /)
+# finding aid status(es)
 
 Example:
 
-<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/</code>
+<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ Completed</code>
 
 Each exported resource will be named according to the resources id and have an xml extension.
+
+A file named resourceIndex.txt will be generated for every resource (including one not being exported) with fields for resourceIdentifier, getFindingAidStatus, title and lastUpdated.
 
 h2. Possible Issues
 
