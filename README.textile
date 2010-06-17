@@ -36,11 +36,13 @@ This plugin requires 3 parameters
 # DATABASE PASSWORD
 # a task name (currently only ead is supported)
 # a location for the export files (must include an ending /)
-# finding aid status(es)
+# options 
 
 Example:
 
-<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ Completed</code>
+<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed</code>
+
+Currently the only implemented opition is -fas for findingAidStatus.  You can provide more than 1 fas.
 
 Each exported resource will be named according to the resources id and have an xml extension.
 

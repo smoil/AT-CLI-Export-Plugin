@@ -65,12 +65,25 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         for(int i = 0; i < params.length; i++) {
             System.out.println("Parameter " + (i+1) + " = " + params[i]);
         }
-
-        // store finding aid statuses
-        java.util.List<String> findingAidStatuses = new java.util.ArrayList();
-        for(int i = 3; i < params.length; i++){
-        	findingAidStatuses.add(params[i]);
+        
+        java.util.Hashtable optionsAndArgs = new java.util.Hashtable();
+        for(int i=3; i<params.length;i++){
+        	if(params[i].startsWith("-"))
+        		optionsAndArgs.putAll(addParams(params, i));
         }
+        
+//        System.out.println(optionsAndArgs.get("-cats"));
+//        System.out.println(optionsAndArgs.get("-fas"));
+//        System.out.println(optionsAndArgs.get("-cows"));
+//        
+//        if( ((java.util.List<String>) optionsAndArgs.get("-fas")).contains("Completed"))
+//        	System.out.println("WHATS UP SON");
+        
+//        if(true)
+//        	return;
+        
+        
+        // store finding aid statuses
 
         DomainAccessObject access = new ResourcesDAO();
 
@@ -137,10 +150,10 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         }catch(Exception e){
         	System.out.println(e);
         }
-
+        
         for(int i = 0; i < recordCount; i++) {
-        	if(findingAidStatuses.contains(resources.get(i).getFindingAidStatus())){        		
-        		
+        	System.out.println(resources.get(i).getFindingAidStatus());
+        	if( filterOnOptions(resources.get(i), optionsAndArgs)){        		
 	            try {
 	                // load the full resource from database using a long session
 	                Resources resource = (Resources)access.findByPrimaryKeyLongSession(resources.get(i).getIdentifier());
@@ -187,6 +200,40 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         String[] tasks = {"ead"};
 
         return tasks;
+    }
+    
+    //Pass in params array and an index to that array pointing a parameter type (like -authors)
+    //Returns a hash with the parameter type as the index and an array of options
+    private java.util.Hashtable addParams(String[] args, int index){
+    	// create an array to store sub arguments
+    	java.util.List<String> subArgs = new java.util.ArrayList();
+    	int n = index + 1;
+    	try {
+    		while(!args[n].startsWith("-")){
+    			subArgs.add(args[n]);
+    			n++;
+    		}
+    	}catch(Exception e){}
+    	java.util.Hashtable returnVal = new java.util.Hashtable();
+    	returnVal.put(args[index], subArgs);
+    	return returnVal;
+    }
+    
+    // Returns true is resource is qualified by options
+    // If option is not present, allow it to pass
+    // If option is present, deny unless check passes
+    // Currently options are ANDED, if any check fails they all fail
+    private boolean filterOnOptions(Resources resource, java.util.Hashtable options){
+    	
+    	// finding aid status options
+    	boolean fas_proceed = true;
+    	if(options.containsKey("-fas")){
+    		fas_proceed = false;
+    		if( ((java.util.List<String>)options.get("-fas")).contains(resource.getFindingAidStatus()) )
+    			fas_proceed = true;
+    	}
+    	
+    	return fas_proceed;
     }
 
     
