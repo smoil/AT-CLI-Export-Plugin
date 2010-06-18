@@ -289,9 +289,30 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
     		io_proceed = resource.getInternalOnly();
     	}
     	
+    	// last modified date
+    	boolean lmd_proceed = true;
+    	if(options.containsKey("-lmd")){
+    		lmd_proceed = false;
+    		try{
+    			java.text.DateFormat df = new java.text.SimpleDateFormat("dd-MM-yyyy");
+   	    		java.util.Date date = df.parse(((java.util.List<String>)options.get("-lmd")).get(1));
+   	    		if(resource.getLastUpdated().after(date)){
+   	    			System.out.println("after date");
+   	    			System.out.println(((java.util.List<String>)options.get("-lmd")).get(0));
+   	    			// only really need to check for GT, but if LTE, GTE are added can be helpful
+   	    			if(((java.util.List<String>)options.get("-lmd")).get(0) == "LT"){
+   	    				
+   	    			}else if(((java.util.List<String>)options.get("-lmd")).get(0).equalsIgnoreCase("GT")){
+   	    				lmd_proceed = true;
+   	    			}
+   	    		}
+   	    			
+   	    		
+    		}catch(Exception e){ System.out.println("DATE FORMAT FOR LAST MODIFIED FILTER IS INVALID OR MISSING: IGNORINING DATE CHECK");}
+    	}
     	
-    	
-    	return (fas_proceed & author_proceed & eadfauid_proceed & rid_proceed & rid1_proceed & rid2_proceed & rid3_proceed & rn_proceed & io_proceed);
+    	// can always return earlier on a false, but this might be useful if/when ORing is implemented
+    	return (fas_proceed & author_proceed & eadfauid_proceed & rid_proceed & rid1_proceed & rid2_proceed & rid3_proceed & rn_proceed & io_proceed & lmd_proceed);
     }
 
     

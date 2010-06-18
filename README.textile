@@ -95,6 +95,10 @@ Internal only
 tag: -io
 params: none needed
 
+Last Modified Date
+tag -lmd
+params: less than or greater than (LT | GT) and a date specified in the format dd-MM-yyyy, ex: <code>-lmd GT 01-31-2007</code>
+
 Example with multiple options: <code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed InProcess -rid1 someid otherid eventhisid -io</code>
 
 This would exports resources with a finding aid status of Completed or InProcess AND resouce ID1 of someid or otherid or eventhisid AND Internal Only (true)
