@@ -49,6 +49,23 @@ A file named resourceIndex.txt will be generated for every resource (including o
 
 h2. Options
 
+When converting a resource to a file the following four options are disabled by default but can be enabled by using the corresponding switch:
+
+Internal Only
+<code>-internalOnly</code>
+
+Include DAOS
+<code>-includeDaos</code>
+
+Suppress Name Space
+<code>-suppressNameSpace</code>
+
+Use DOID as HREF
+<code>-useDOIDAsHREF</code>
+
+
+The following options pertain to filtering when selecting resources.
+
 Currently the only well tested option is for finding aid status.
 
 Options are additive; a record must meet the requirements of all options in order to be exported.  

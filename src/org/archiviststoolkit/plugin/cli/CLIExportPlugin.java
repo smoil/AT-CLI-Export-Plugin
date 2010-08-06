@@ -66,9 +66,23 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
             System.out.println("Parameter " + (i+1) + " = " + params[i]);
         }
         
+        // options for when calling convertResourceToFile
+        boolean internalOnly = false;
+        boolean includeDaos = false;
+        boolean suppressNameSpace = false;
+        boolean useDOIDAsHREF = false;
+        
         java.util.Hashtable optionsAndArgs = new java.util.Hashtable();
         for(int i=3; i<params.length;i++){
-        	if(params[i].startsWith("-"))
+        	if((params[i]).equals("-internalOnly"))
+        		internalOnly = true;
+        	else if((params[i]).equals("-includeDaos"))
+        		includeDaos = true;
+        	else if((params[i]).equals("-suppressNameSpace"))
+        		suppressNameSpace = true;
+        	else if((params[i]).equals("-useDOIDAsHREF"))
+        		useDOIDAsHREF = true;
+        	else if(params[i].startsWith("-"))
         		optionsAndArgs.putAll(addParams(params, i));
         }        
         
@@ -133,7 +147,11 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         		//this doesnt work
         		out.write(resources.get(i).getLastUpdated().toString());
         		out.newLine();
+        		
+        		out.flush();
         	}
+        	out.close();
+        	fstream.close();
         }catch(Exception e){
         	System.out.println(e);
         }
@@ -149,7 +167,7 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
 	                String fileName = StringHelper.removeInvalidFileNameCharacters(resource.getResourceIdentifier());
 	                java.io.File file = new java.io.File(exportRootPath + fileName + ".xml");
 	                file.createNewFile();
-	                ead.convertResourceToFile(resource, file, fakePanel, false, true, true, true);
+	                ead.convertResourceToFile(resource, file, fakePanel, internalOnly, includeDaos, suppressNameSpace, useDOIDAsHREF);
 	
 	                
 	            } catch (Exception e) {
