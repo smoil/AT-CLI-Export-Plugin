@@ -4,9 +4,9 @@ This plugin stemmed from a need to periodically export resources from AT without
 
 Plugin features
 
-* export of resources in EAD format
+* export of resources in EAD and/or MARC format
 * individual file per resource
-* only exports resources with a finding aid status of complete
+* many options to limit scope of resources to export
 
 Requirements
 
@@ -34,16 +34,17 @@ Once the plugin is installed you can execute atcli.command with appropriate para
 This plugin requires 3 parameters
 
 # DATABASE PASSWORD
-# a task name (currently only ead is supported)
+# a task name (export)
 # a location for the export files (must include an ending /)
+# type of export (-ead and or -marc)
 # options 
 
 Example:
 
-<code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed</code>
+<code>atcli.command mydatabasepassword export ~/path/for/exported/files/ -fas Completed -ead -marc</code>
 
 
-Each exported resource will be named according to the resources id and have an xml extension.
+Each exported resource will be named according to the resources id, the type of export and have an xml extension (ex. 0190-EAD.xml).
 
 A file named resourceIndex.txt will be generated for every resource (including one not being exported) with fields for resourceIdentifier, getFindingAidStatus, title and lastUpdated.
 
@@ -51,16 +52,16 @@ h2. Options
 
 When converting a resource to a file the following four options are disabled by default but can be enabled by using the corresponding switch:
 
-Internal Only
+Internal Only (suppresses internal portions of resource)
 <code>-internalOnly</code>
 
-Include DAOS
+Include DAOS (not supported for MARC export)
 <code>-includeDaos</code>
 
-Suppress Name Space
+Suppress Name Space (not supported for MARC export)
 <code>-suppressNameSpace</code>
 
-Use DOID as HREF
+Use DOID as HREF (not supported for MARC export)
 <code>-useDOIDAsHREF</code>
 
 
@@ -116,7 +117,7 @@ Last Modified Date
 tag -lmd
 params: less than or greater than (LT | GT) and a date specified in the format dd-MM-yyyy, ex: <code>-lmd GT 01-31-2007</code>
 
-Example with multiple options: <code>atcli.command mydatabasepassword ead ~/path/for/exported/files/ -fas Completed InProcess -rid1 someid otherid eventhisid -io</code>
+Example with multiple options: <code>atcli.command mydatabasepassword export ~/path/for/exported/files/ -ead -fas Completed InProcess -rid1 someid otherid eventhisid -io</code>
 
 This would exports resources with a finding aid status of Completed or InProcess AND resouce ID1 of someid or otherid or eventhisid AND Internal Only (true)
 

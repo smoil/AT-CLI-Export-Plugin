@@ -3,6 +3,7 @@ package org.archiviststoolkit.plugin.cli;
 import org.archiviststoolkit.ApplicationFrame;
 import org.archiviststoolkit.util.StringHelper;
 import org.archiviststoolkit.exporter.EADExport;
+import org.archiviststoolkit.exporter.MARCExport;
 import org.archiviststoolkit.editor.ArchDescriptionFields;
 import org.archiviststoolkit.model.Resources;
 import org.archiviststoolkit.mydomain.DomainAccessObject;
@@ -71,10 +72,16 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         boolean includeDaos = false;
         boolean suppressNameSpace = false;
         boolean useDOIDAsHREF = false;
+        boolean MARC = false;
+        boolean EAD = false;
         
         java.util.Hashtable optionsAndArgs = new java.util.Hashtable();
         for(int i=3; i<params.length;i++){
-        	if((params[i]).equals("-internalOnly"))
+        	if((params[i]).equals("-ead"))
+        		EAD = true;
+        	else if((params[i]).equals("-marc"))
+        		MARC = true;
+        	else if((params[i]).equals("-internalOnly"))
         		internalOnly = true;
         	else if((params[i]).equals("-includeDaos"))
         		includeDaos = true;
@@ -84,7 +91,13 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         		useDOIDAsHREF = true;
         	else if(params[i].startsWith("-"))
         		optionsAndArgs.putAll(addParams(params, i));
-        }        
+        }
+        
+        // ensure EAD and or MARC is select
+        if(!MARC && !EAD){
+        	System.out.println("You must choose to export EAD and/or MARC records.");
+        	return;
+        }
         
         DomainAccessObject access = new ResourcesDAO();
 
@@ -107,13 +120,15 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         InfiniteProgressPanel fakePanel = new InfiniteProgressPanel();
 
         // print out the resource identifier and title and export as ead
-        System.out.println("Exporting EADs ");
+        System.out.println("Exporting Resources");
 
         // Get the runtime for clearing memory
         Runtime runtime = Runtime.getRuntime();
 
         // get the ead exporter
         EADExport ead = new EADExport();
+        
+        MARCExport marc = new MARCExport();
         
         // create an index file of all resources
         java.io.File indexFile = new java.io.File(exportRootPath + "resourceIndex.txt");
@@ -165,9 +180,18 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
 	                System.out.println(resource.getResourceIdentifier() + " : " + resource.getTitle());
 	
 	                String fileName = StringHelper.removeInvalidFileNameCharacters(resource.getResourceIdentifier());
-	                java.io.File file = new java.io.File(exportRootPath + fileName + ".xml");
-	                file.createNewFile();
-	                ead.convertResourceToFile(resource, file, fakePanel, internalOnly, includeDaos, suppressNameSpace, useDOIDAsHREF);
+	                
+	                if(EAD){
+	                	java.io.File fileEAD = new java.io.File(exportRootPath + fileName + "-EAD" + ".xml");
+	                	fileEAD.createNewFile();
+	                	ead.convertResourceToFile(resource, fileEAD, fakePanel, internalOnly, includeDaos, suppressNameSpace, useDOIDAsHREF);
+	                }
+	                
+	                if(MARC){
+	                	java.io.File fileMARC = new java.io.File(exportRootPath + fileName + "-MARC" + ".xml");
+	                	fileMARC.createNewFile();
+	                	marc.convertDBRecordToFile(resource, fileMARC, fakePanel, internalOnly);
+	                }
 	
 	                
 	            } catch (Exception e) {
@@ -201,7 +225,7 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
      * to handel.
      */
     public String[] getTaskList() {
-        String[] tasks = {"ead"};
+        String[] tasks = {"export"};
 
         return tasks;
     }
