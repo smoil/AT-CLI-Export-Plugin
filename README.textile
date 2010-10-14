@@ -52,14 +52,14 @@ h2. Options
 
 When converting a resource to a file the following four options are disabled by default but can be enabled by using the corresponding switch:
 
-Internal Only (suppresses internal portions of resource)
-<code>-internalOnly</code>
+Suppress Internal Only (suppresses components and notes when marked "internal only")
+<code>-suppressInternalOnly</code>
 
 Include DAOS (not supported for MARC export)
 <code>-includeDaos</code>
 
-Suppress Name Space (not supported for MARC export)
-<code>-suppressNameSpace</code>
+Numbered Components (number component levels, not supported for MARC export)
+<code>-numberedComponents</code>
 
 Use DOID as HREF (not supported for MARC export)
 <code>-useDOIDAsHREF</code>

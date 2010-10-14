@@ -17,6 +17,8 @@ import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 
 /* Based off the cli plugin code written by the person below 
@@ -68,9 +70,9 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         }
         
         // options for when calling convertResourceToFile
-        boolean internalOnly = false;
+        boolean suppressInternalOnly = false;
         boolean includeDaos = false;
-        boolean suppressNameSpace = false;
+        boolean numberedComponents = false;
         boolean useDOIDAsHREF = false;
         boolean MARC = false;
         boolean EAD = false;
@@ -81,12 +83,12 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         		EAD = true;
         	else if((params[i]).equals("-marc"))
         		MARC = true;
-        	else if((params[i]).equals("-internalOnly"))
-        		internalOnly = true;
+        	else if((params[i]).equals("-suppressInternalOnly"))
+        		suppressInternalOnly = true;
         	else if((params[i]).equals("-includeDaos"))
         		includeDaos = true;
-        	else if((params[i]).equals("-suppressNameSpace"))
-        		suppressNameSpace = true;
+        	else if((params[i]).equals("-numberedComponents"))
+        		numberedComponents = true;
         	else if((params[i]).equals("-useDOIDAsHREF"))
         		useDOIDAsHREF = true;
         	else if(params[i].startsWith("-"))
@@ -171,30 +173,38 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
         	System.out.println(e);
         }
         
+        PrintStream printStreamOriginal=System.out;
+        
         for(int i = 0; i < recordCount; i++) {
-        	if( filterOnOptions(resources.get(i), optionsAndArgs)){        		
+        	if(filterOnOptions(resources.get(i), optionsAndArgs)){        		
 	            try {
 	                // load the full resource from database using a long session
 	                Resources resource = (Resources)access.findByPrimaryKeyLongSession(resources.get(i).getIdentifier());
 	
 	                System.out.println(resource.getResourceIdentifier() + " : " + resource.getTitle());
-	
+	                
 	                String fileName = StringHelper.removeInvalidFileNameCharacters(resource.getResourceIdentifier());
+	                
+	                System.setOut(new PrintStream(new OutputStream(){
+	        			public void write(int b) {
+	        			}
+	        		}));
 	                
 	                if(EAD){
 	                	java.io.File fileEAD = new java.io.File(exportRootPath + fileName + "-EAD" + ".xml");
 	                	fileEAD.createNewFile();
-	                	ead.convertResourceToFile(resource, fileEAD, fakePanel, internalOnly, includeDaos, suppressNameSpace, useDOIDAsHREF);
+	                	ead.convertResourceToFile(resource, fileEAD, fakePanel, suppressInternalOnly, numberedComponents, includeDaos, useDOIDAsHREF);
 	                }
 	                
 	                if(MARC){
 	                	java.io.File fileMARC = new java.io.File(exportRootPath + fileName + "-MARC" + ".xml");
 	                	fileMARC.createNewFile();
-	                	marc.convertDBRecordToFile(resource, fileMARC, fakePanel, internalOnly);
+	                	marc.convertDBRecordToFile(resource, fileMARC, fakePanel, suppressInternalOnly);
 	                }
-	
+	                System.setOut(printStreamOriginal);
 	                
 	            } catch (Exception e) {
+	            	System.setOut(printStreamOriginal);
 	                System.out.println(e);
 	            }
 	
@@ -202,8 +212,6 @@ public class CLIExportPlugin extends Plugin implements ATPlugin {
 	            // left open then hinernate caches the resource records even though
 	            // we don't need them anymore
 	            access.getLongSession().close(); // close the connection
-	
-	            
         	}
         	// since we no longer need this resource, set it to null
             // close the session in an attemp to save memory
